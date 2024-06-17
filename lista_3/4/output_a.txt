@@ -1,0 +1,70 @@
+
+ making pointer type
+(bv64, bv64)P := [(or (not (=> true (=> guard_exec (bvuge i0 #x00000000))))
+    (not (=> true (=> guard_exec (bvult i0 #x00000002))))
+    (not (=> true (=> guard_exec (bvuge (bvadd i0 #x00000001) #x00000000))))
+    (not (=> true (=> guard_exec (bvult (bvadd i0 #x00000001) #x00000002))))
+    (not (=> true
+             (=> guard_exec
+                 (= (pointer_object p2)
+                    (pointer_object (struct_pointer_type_struct
+                                      #x0000000000000002
+                                      #x0000000000000000))))))
+    (not (=> true
+             (=> guard_exec
+                 (= (select a3 ((_ extract 0 0) (bvadd i0 #x00000002)))
+                    #x00000001)))))]
+solver := [(declare-datatypes ((struct_pointer_type_struct 0)) (((struct_pointer_type_struct (pointer_object (_ BitVec 64)) (pointer_offset (_ BitVec 64))))))
+(declare-fun x0 () (_ BitVec 32))
+(declare-fun i0 () Bool)
+(declare-fun i0 () (_ BitVec 32))
+(declare-fun a0 () (Array (_ BitVec 1) (_ BitVec 32)))
+(declare-fun a1 () (Array (_ BitVec 1) (_ BitVec 32)))
+(declare-fun a2 () (Array (_ BitVec 1) (_ BitVec 32)))
+(declare-fun a3 () (Array (_ BitVec 1) (_ BitVec 32)))
+(declare-fun a4 () (Array (_ BitVec 1) (_ BitVec 32)))
+(declare-fun p2 () struct_pointer_type_struct)
+(declare-fun guard_exec () Bool)
+(assert (= i0 (= x0 #x00000000)))
+(assert (= a1 (store a0 ((_ extract 0 0) i0) #x00000000)))
+(assert (= a2 a0))
+(assert (= a3 (store a2 ((_ extract 0 0) (bvadd i0 #x00000001)) #x00000001)))
+(assert (= a4 (ite i0 a1 a3)))
+(assert (= p2 (struct_pointer_type_struct #x0000000000000002 #x0000000000000000)))
+(assert (let ((a!1 (not (=> true (=> guard_exec (bvuge i0 #x00000000)))))
+      (a!2 (not (=> true (=> guard_exec (bvult i0 #x00000002)))))
+      (a!3 (=> true (=> guard_exec (bvuge (bvadd i0 #x00000001) #x00000000))))
+      (a!4 (=> true (=> guard_exec (bvult (bvadd i0 #x00000001) #x00000002))))
+      (a!5 (=> guard_exec
+               (= (pointer_object p2)
+                  (pointer_object (struct_pointer_type_struct
+                                    #x0000000000000002
+                                    #x0000000000000000)))))
+      (a!6 (= (select a3 ((_ extract 0 0) (bvadd i0 #x00000002))) #x00000001)))
+  (or a!1
+      a!2
+      (not a!3)
+      (not a!4)
+      (not (=> true a!5))
+      (not (=> true (=> guard_exec a!6))))))
+]
+sat
+i0 -> #x00000000
+a0 -> ((as const (Array (_ BitVec 1) (_ BitVec 32))) #xfffffffe)
+guard_exec -> true
+p2 -> (struct_pointer_type_struct #x0000000000000002 #x0000000000000000)
+x0 -> #x00000000
+a4 -> (store ((as const (Array (_ BitVec 1) (_ BitVec 32))) #xfffffffe)
+             #b0
+             #x00000000)
+a3 -> (store ((as const (Array (_ BitVec 1) (_ BitVec 32))) #xfffffffe)
+             #b1
+             #x00000001)
+a2 -> ((as const (Array (_ BitVec 1) (_ BitVec 32))) #xfffffffe)
+a1 -> (store ((as const (Array (_ BitVec 1) (_ BitVec 32))) #xfffffffe)
+             #b0
+             #x00000000)
+i0 -> true
+
+
+END

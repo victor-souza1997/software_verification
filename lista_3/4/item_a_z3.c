@@ -471,7 +471,7 @@ void check2(Z3_context ctx, Z3_solver s, Z3_lbool expected_result)
 
 }
 
-int buffer_overflow(){
+void buffer_overflow(){
 Z3_context ctx = mk_context();
 Z3_solver s = mk_solver(ctx);
 
@@ -601,4 +601,9 @@ printf("\nEND\n");
 del_solver(ctx, s);
 Z3_del_context(ctx);
 
+}
+
+int main(){
+
+    buffer_overflow();
 }
